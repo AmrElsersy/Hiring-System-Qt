@@ -1,47 +1,52 @@
-#include "network.h"
+﻿#include "network.h"
 
-Network::Network(int _protocol)
+NetworkClient::NetworkClient(std::string _address, quint16 _port): QObject (nullptr)
 {
-    this->protocol = _protocol;
+    this->socket = new QTcpSocket();
+    this->serverPort = _port;
+    this->serverAddress = _address;
 }
 
-Network::~Network()
+NetworkClient::~NetworkClient()
 {
-
 }
 
-////////////////////// TCP /////////////////////////////////
-TcpNetwork::TcpNetwork(): Network (PROTOCOL::TCP)
+void NetworkClient::Send(QJsonObject json)
+{
+    QJsonDocument document;
+    document.setObject(json);
+    QByteArray bytes = document.toJson();
+    this->socket->write(bytes);
+    if (this->socket->waitForBytesWritten(100))
+        qDebug() << "Sent" << bytes;
+    else
+        qDebug() << "Write failed";
+}
+
+QJsonObject NetworkClient::Receive()
+{
+    QByteArray bytes = this->socket->readAll();
+    QJsonDocument document = QJsonDocument::fromJson(bytes);
+    QJsonObject jsonObject = document.object();
+    qDebug() << "Received " << jsonObject.keys();
+    return jsonObject;
+}
+
+QAbstractSocket *NetworkClient::GetSocket()
+{
+    return this->socket;
+}
+
+void NetworkClient::ConnectToServer()
 {
     QHostAddress address;
     address.setAddress(QString::fromStdString(this->serverAddress));
-    this->socket.bind(address, this->serverPort);
-}
 
-void TcpNetwork::Send()
-{
-//    this->socket.write();
-}
-
-void TcpNetwork::Receive()
-{
-    QByteArray bytes = this->socket.readAll();
-}
-
-////////////////////// UDP /////////////////////////////////
-UdpNetwork::UdpNetwork(): Network (PROTOCOL::UDP)
-{
-    QHostAddress address;
-    address.setAddress(QString::fromStdString(this->serverAddress));
-    this->socket.bind(address, this->serverPort);
-}
-
-void UdpNetwork::Send()
-{
+    this->socket->connectToHost(address, this->serverPort);
+    if (this->socket->waitForConnected())
+        qDebug() << "Connected to " << address << " on port " << this->serverPort;
+    else
+        qDebug() << "Failed to connect";
 
 }
 
-void UdpNetwork::Receive()
-{
-
-}

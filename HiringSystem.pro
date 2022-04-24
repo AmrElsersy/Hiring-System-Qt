@@ -4,7 +4,7 @@
 #
 #-------------------------------------------------
 
-QT       += core gui
+QT       += core gui network
 
 greaterThan(QT_MAJOR_VERSION, 4): QT += widgets
 
@@ -30,14 +30,16 @@ SOURCES += \
     candidate.cpp \
     job.cpp \
     network.cpp \
-    candidatesoftware.cpp
+    candidatesoftware.cpp \
+    server.cpp
 
 HEADERS += \
         mainwindow.h \
     candidate.h \
     job.h \
     network.h \
-    candidatesoftware.h
+    candidatesoftware.h \
+    server.h
 
 FORMS += \
         mainwindow.ui

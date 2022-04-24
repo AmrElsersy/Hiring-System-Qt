@@ -1,11 +1,20 @@
 #ifndef JOB_H
 #define JOB_H
 
+#include <bits/stdc++.h>
+#include <jsoncpp/json/json.h>
+#include <QJsonObject>
 
 class Job
 {
 public:
-    Job();
+    Job(std::string _name, std::string _desc);
+    Job(QJsonObject json);
+    std::string GetDescription();
+    std::string GetName();
+private:
+    std::string name;
+    std::string description;
 };
 
 #endif // JOB_H
