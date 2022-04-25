@@ -25,11 +25,6 @@ void Candidate::SetAge(int _age)
     this->age = _age;
 }
 
-void Candidate::SetMarilarStatus(std::string _status)
-{
-    this->matilarStatus = _status;
-}
-
 void Candidate::SetMajor(std::string _major)
 {
     this->major = _major;
@@ -67,8 +62,6 @@ QJsonObject Candidate::SerializeToJson()
     object.insert("age", ageValue);
     QJsonValue gpaValue(this->age);
     object.insert("gpa", gpaValue);
-    QJsonValue statusValue(QString::fromStdString(this->matilarStatus));
-    object.insert("status", statusValue);
     QJsonValue universityValue(QString::fromStdString(this->university));
     object.insert("university", universityValue);
     QJsonValue jobValue(QString::fromStdString(this->appliedJobName));

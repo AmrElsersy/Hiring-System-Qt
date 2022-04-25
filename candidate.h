@@ -20,7 +20,6 @@ public:
     void SetName(std::string);
     void SetGender(std::string);
     void SetAge(int);
-    void SetMarilarStatus(std::string);
     void SetMajor(std::string);
     void SetUniversiry(std::string);
     void SetGPA(double);
@@ -31,7 +30,6 @@ private:
     std::string name;
     std::string gender;
     int age;
-    std::string matilarStatus;
     std::string major;
     std::string university;
     double gpa;

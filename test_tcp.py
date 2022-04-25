@@ -30,7 +30,28 @@ with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as s:
             response = {}
             if json_data["type"] == "jobs":
                 response["type"] = "jobs"
-                response["jobs"] = [{"name":"MED Software", "requirements":"C++ OOP Algorithms"}, {"name": "Computer Vision Com Iot", "requirements":"Pytorch Qt ROS"}]
+                response["jobs"] = [
+                    {
+                        "name":"MED Software",
+                        "requirements":
+                            """
+                            - C++
+                            - OOP
+                            - Algorithms
+                            - Datastructures
+                            - Qt
+                            - Software Engineering
+                            """},
+
+                    {"name": "Computer Vision Com Iot", "requirements":
+                        """
+                        - Tensorflow or Pytorch
+                        - ROS Robot Operating System
+                        - Qt
+                        - TensorRT and CUDA
+                        - C++ and Python
+                        """}]
+
             elif json_data["type"] == "submit":
                 response["type"] = "feedback"
                 response["feedback"] = "THIS IS A FEEDBACK ON THE JOB APPLICATION AND YOU ARE REJECTED HAHA"
