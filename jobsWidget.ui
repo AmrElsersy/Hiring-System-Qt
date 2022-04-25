@@ -65,6 +65,10 @@ color: rgb(114, 159, 207);</string>
      <height>31</height>
     </rect>
    </property>
+   <property name="styleSheet">
+    <string notr="true">color: rgb(114, 159, 207);
+selection-background-color: rgb(243, 243, 243);</string>
+   </property>
   </widget>
   <widget class="QTextEdit" name="textEdit">
    <property name="geometry">
@@ -78,6 +82,9 @@ color: rgb(114, 159, 207);</string>
    <property name="styleSheet">
     <string notr="true">color: rgb(32, 74, 135);
 background-color: rgb(243, 243, 243);</string>
+   </property>
+   <property name="readOnly">
+    <bool>true</bool>
    </property>
   </widget>
  </widget>

@@ -57,6 +57,7 @@ public slots:
     void onJobSelected(int);
     void onApplyPressed();
     void onSubmit();
+    void onClose();
 
 //signals:
 };

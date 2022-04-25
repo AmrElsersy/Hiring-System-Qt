@@ -29,9 +29,18 @@ MainWindow::MainWindow(QWidget *parent) :
     connect(this->jobsComboBox, SIGNAL(currentIndexChanged(int)), this, SLOT(onJobSelected(int)));
     connect(this->jobsApplyBtn, SIGNAL(clicked()), this, SLOT(onApplyPressed()));
 
-    // Job Application Widget
+    // candidate application Widget
     this->candidateSubmitBtn = this->candidateWidget->findChild<QPushButton*>("submitButton");
     connect(this->candidateSubmitBtn, SIGNAL(clicked()), this, SLOT(onSubmit()));
+
+    // application widget: gender combobox
+    auto comboBoxGender = this->candidateWidget->findChild<QComboBox*>("comboBoxGender");
+    comboBoxGender->addItem("Male");
+    comboBoxGender->addItem("Female");
+
+    // feedback widget: close btn
+    auto closeBtn = this->feedbackWidget->findChild<QPushButton*>("pushButton");
+    connect(closeBtn, SIGNAL(clicked()), this, SLOT(onClose()));
 }
 
 MainWindow::~MainWindow()
@@ -91,6 +100,9 @@ void MainWindow::onFeedbackReceived(std::string _feedback)
     this->feedback = _feedback;
     qDebug() << "received Feedback" << QString::fromStdString(_feedback);
 
+    // set the gui's feedback text with the received text feedback
+    auto feedbackTextEdit = this->feedbackWidget->findChild<QTextEdit*>("textEdit");
+    feedbackTextEdit->setText(QString::fromStdString(feedback));
 }
 
 void MainWindow::onJobSelected(int index)
@@ -100,6 +112,7 @@ void MainWindow::onJobSelected(int index)
     {
         if (job.GetName() == jobNameApplied)
         {
+            // change the textEdit with the selected job requirements
             std::string desc = job.GetDescription();
             this->jobsRequirementsTextEdit->setText(QString::fromStdString(desc));
             return;
@@ -113,11 +126,44 @@ void MainWindow::onApplyPressed()
     std::string jobNameApplied = this->jobsComboBox->currentText().toStdString();
     this->client->GetCandidate()->SetAppliedJob(jobNameApplied);
 
+    // change mainwindow to the candidate application window
     this->stackWidget->setCurrentIndex(CANDIDATE_IDX);
 }
 
 void MainWindow::onSubmit()
 {
+    // get the line edit widgets that the user filled
+    auto lineEditName = this->candidateWidget->findChild<QLineEdit*>("lineEditName");
+    auto lineEditAge = this->candidateWidget->findChild<QLineEdit*>("lineEditAge");
+    auto lineEditGPA = this->candidateWidget->findChild<QLineEdit*>("lineEditGPA");
+    auto lineEditMajor = this->candidateWidget->findChild<QLineEdit*>("lineEditMajor");
+    auto lineEditUni = this->candidateWidget->findChild<QLineEdit*>("lineEditUni");
+    auto textEditAwards = this->candidateWidget->findChild<QTextEdit*>("textEditAwards");
+    auto comboBoxGender = this->candidateWidget->findChild<QComboBox*>("comboBoxGender");
 
+    // set the candidate's application values
+    auto candidate = this->client->GetCandidate();
+    candidate->SetName(lineEditName->text().toStdString());
+    candidate->SetAge(lineEditAge->text().toInt());
+    candidate->SetGPA(lineEditGPA->text().toDouble());
+    candidate->SetMajor(lineEditMajor->text().toStdString());
+    candidate->SetUniversiry(lineEditUni->text().toStdString());
+    candidate->SetGender(comboBoxGender->currentText().toStdString());
+
+    QStringList lines = textEditAwards->toPlainText().split("\n");
+    for (auto line : lines)
+        candidate->AddAward(line.toStdString());
+
+    // send the data to the server to submit it
+    this->client->Submit();
+
+    // change the main window to the feedback window
+    this->stackWidget->setCurrentIndex(FEEDBACK_IDX);
+    this->resize(400, 450);
+}
+
+void MainWindow::onClose()
+{
+    this->close();
 }
 
