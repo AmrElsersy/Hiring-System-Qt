@@ -9,7 +9,7 @@
 
 #include <QJsonDocument>
 #include <QJsonObject>
-
+#include <QFileInfo>
 #include <QObject>
 
 #include <job.h>
@@ -42,13 +42,13 @@ class NetworkServer : public QTcpServer
 {
     Q_OBJECT
 public:
-    explicit NetworkServer(quint16 port, QObject *parent = nullptr);
+    explicit NetworkServer(quint16 port,std::string jsonPath, QObject *parent = nullptr);
     std::vector<Job> GetJobs();
     std::vector<Candidate> GetCandidates();
     void SetJsonPath(std::string path);
 
     QJsonObject ReadJson(std::string path);
-    void SaveJson(std::string path, QJsonObject);
+    bool SaveJson(std::string path, QJsonObject);
 
     QJsonObject SerializeJobs();
     QJsonObject SerializeCandidates();
@@ -58,7 +58,7 @@ protected:
 
 public slots:
     void AddJob(Job job);
-    void SubmitCandidateApplication(Candidate candidate);
+    void SubmitCandidate(Candidate candidate);
     void SendFeedback(std::string feedback);
 
 private:

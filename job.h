@@ -4,6 +4,7 @@
 #include <bits/stdc++.h>
 #include <jsoncpp/json/json.h>
 #include <QJsonObject>
+#include <QJsonValue>
 
 class Job
 {
