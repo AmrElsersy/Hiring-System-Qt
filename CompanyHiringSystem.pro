@@ -8,7 +8,7 @@ QT       += core gui network uitools
 
 greaterThan(QT_MAJOR_VERSION, 4): QT += widgets
 
-TARGET = HiringSystem
+TARGET = CompanyHiringSystem
 TEMPLATE = app
 
 # The following define makes your compiler emit warnings if you use
@@ -26,24 +26,20 @@ DEFINES += QT_DEPRECATED_WARNINGS
 CONFIG += c++11
 
 SOURCES += \
-        main.cpp \
-        mainwindow.cpp \
+        main_company.cpp \
     candidate.cpp \
     job.cpp \
-    network.cpp \
-    candidatesoftware.cpp \
+    server.cpp \
+    company_mainwindow.cpp
 
 HEADERS += \
-        mainwindow.h \
     candidate.h \
     job.h \
-    network.h \
-    candidatesoftware.h \
+    server.h \
+    company_mainwindow.h
 
 FORMS += \
-        jobsWidget.ui \
-        candidateWidget.ui \
-        feedbackWidget.ui
+        mainwindow.ui \
 
 
 # Default rules for deployment.
