@@ -2,6 +2,7 @@
 #define COMPANY_MAINWINDOW_H
 
 #include <QMainWindow>
+#include <server.h>
 
 class company_mainwindow : public QMainWindow
 {
@@ -12,6 +13,9 @@ public:
 signals:
 
 public slots:
+
+private:
+    NetworkServer *server;
 };
 
 #endif // COMPANY_MAINWINDOW_H

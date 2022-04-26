@@ -26,6 +26,8 @@ public:
     void AddAward(std::string);
     void SetAppliedJob(std::string);
     QJsonObject SerializeToJson();
+    void SetFromJson(QJsonObject);
+
 private:
     std::string name;
     std::string gender;

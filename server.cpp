@@ -10,11 +10,12 @@ NetworkServer::NetworkServer(quint16 port, QObject *parent) :QTcpServer(parent)
 
 }
 
-void NetworkServer::incomingConnection(int socketDescriptor)
+void NetworkServer::incomingConnection(qintptr socketDescriptor)
 {
     // create thread and set its socket descriptor (for conn communication)
-    CandidateConnThread *thread = new CandidateConnThread();
-    thread->SetSocketDescriptor(socketDescriptor);
+    ConnectionThread *thread = new ConnectionThread(socketDescriptor);
+
+    connect(thread, SIGNAL(finished()), thread, SLOT(deleteLater()));
 
     // connect thread with outside world
 
@@ -22,30 +23,27 @@ void NetworkServer::incomingConnection(int socketDescriptor)
     thread->start();
 }
 
+//////////////////////////////////////////////////////////////////////////////
 
-CandidateConnThread::CandidateConnThread(QObject *parent): QThread (parent)
-{
-}
-
-void CandidateConnThread::run()
+ConnectionThread::ConnectionThread(qintptr socketDescriptor, QObject *parent): QThread (parent)
 {
     // assign the socket to the socket id descriptor
     this->connSocket = new QTcpSocket();
-    this->connSocket->setSocketDescriptor(this->socketDescriptor);
+    this->connSocket->setSocketDescriptor(socketDescriptor);
+}
 
+void ConnectionThread::run()
+{
     connect(this->connSocket, SIGNAL(readyRead()), this, SLOT(onReadyRead()));
     connect(this->connSocket, SIGNAL(disconnected()), this, SLOT(onDisconnected()));
+
+    qDebug() << "Created new thread for socket conn " << this->socketDescriptor;
 
     // wait till the thread is terminated manully
     this->exec();
 }
 
-void CandidateConnThread::SetSocketDescriptor(int _socketDescriptor)
-{
-    this->socketDescriptor = _socketDescriptor;
-}
-
-void CandidateConnThread::SendToServer(QJsonObject json)
+void ConnectionThread::SendToClient(QJsonObject json)
 {
     QJsonDocument document;
     document.setObject(json);
@@ -57,13 +55,14 @@ void CandidateConnThread::SendToServer(QJsonObject json)
         qDebug() << "Write failed from thread " << this->socketDescriptor;
 }
 
-void CandidateConnThread::onReadyRead()
+void ConnectionThread::onReadyRead()
 {
     // read from socket and handle response
     QByteArray bytes = this->connSocket->readAll();
     QJsonDocument document = QJsonDocument::fromJson(bytes);
     QJsonObject jsonObjectRequest = document.object();
 
+    qDebug() << "Server received " << jsonObjectRequest;
 
     if (jsonObjectRequest["type"] == "jobs")
     {
@@ -71,25 +70,34 @@ void CandidateConnThread::onReadyRead()
         QJsonObject response;
         response["type"] = "jobs";
 
-        this->SendToServer(response);
+//        std::vector<Job> jobs = emit jobsRequest();
+//        QJsonArray jobsArray;
+//        for (auto job : jobs)
+//        {
+//            job.
+//            jobsArray.push_back()
+//        }
+
+        this->SendToClient(response);
     }
     else if (jsonObjectRequest["type"] == "submit")
     {
         // just save that
+        this->onFeedback("FEEDBACKK RAY2");
     }
 }
 
-void CandidateConnThread::onFeedback(std::string feedback)
+void ConnectionThread::onFeedback(std::string feedback)
 {
     // send feedback via conn socket
     QJsonObject response;
     response["type"] = "feedback";
     response["feedback"] = QJsonValue(QString::fromStdString(feedback));
 
-    this->SendToServer(response);
+    this->SendToClient(response);
 }
 
-void CandidateConnThread::onDisconnected()
+void ConnectionThread::onDisconnected()
 {
     // free the conn socket and terminate the thread
     this->connSocket->deleteLater();

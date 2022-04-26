@@ -13,20 +13,20 @@
 #include <QObject>
 
 #include <job.h>
+#include <candidate.h>
 
 // Thread for handling connection with the server
-class CandidateConnThread: public QThread
+class ConnectionThread: public QThread
 {
     Q_OBJECT
 public:
-    explicit CandidateConnThread(QObject *parent = nullptr);
+    explicit ConnectionThread(qintptr socketDescriptor, QObject *parent = nullptr);
     void run();
-    void SetSocketDescriptor(int);
-    void SendToServer(QJsonObject);
+    void SendToClient(QJsonObject);
 
 private:
     QTcpSocket *connSocket;
-    int socketDescriptor;
+    qintptr socketDescriptor;
 
 public slots:
     void onReadyRead();
@@ -43,11 +43,32 @@ class NetworkServer : public QTcpServer
     Q_OBJECT
 public:
     explicit NetworkServer(quint16 port, QObject *parent = nullptr);
+    std::vector<Job> GetJobs();
+    std::vector<Candidate> GetCandidates();
+    void SetJsonPath(std::string path);
+
+    QJsonObject ReadJson(std::string path);
+    void SaveJson(std::string path, QJsonObject);
+
+    QJsonObject SerializeJobs();
+    QJsonObject SerializeCandidates();
 
 protected:
-    virtual void incomingConnection(int socketDescriptor);
+    virtual void incomingConnection(qintptr socketDescriptor);
 
 public slots:
+    void AddJob(Job job);
+    void SubmitCandidateApplication(Candidate candidate);
+    void SendFeedback(std::string feedback);
+
+private:
+    std::vector<Job> jobs;
+    std::vector<Candidate> candidates;
+    std::string jobsJsonPath;
+    std::string candidatesJsonPath;
+
+    void ReadJobs();
+    void ReadCandidates();
 };
 
 #endif // SERVER_H

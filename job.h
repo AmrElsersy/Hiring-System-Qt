@@ -12,6 +12,10 @@ public:
     Job(QJsonObject json);
     std::string GetDescription();
     std::string GetName();
+
+    QJsonObject SerializeToJson();
+    void SetFromJson(QJsonObject);
+
 private:
     std::string name;
     std::string description;

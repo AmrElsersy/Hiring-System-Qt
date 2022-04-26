@@ -74,3 +74,16 @@ QJsonObject Candidate::SerializeToJson()
 
     return object;
 }
+
+void Candidate::SetFromJson(QJsonObject object)
+{
+    this->SetName(object["name"].toString().toStdString());
+    this->SetAge(object["age"].toInt());
+    this->SetGPA(object["gpa"].toDouble());
+    this->SetGender(object["gender"].toString().toStdString());
+    this->SetUniversiry(object["university"].toString().toStdString());
+    this->SetAppliedJob(object["job"].toString().toStdString());
+    QJsonArray awards = object["awards"].toArray();
+    for (auto award : awards)
+        this->AddAward(award.toString().toStdString());
+}
