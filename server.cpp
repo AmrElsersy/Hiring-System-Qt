@@ -98,8 +98,11 @@ void NetworkServer::incomingConnection(qintptr socketDescriptor)
     connect(thread, SIGNAL(finished()), thread, SLOT(deleteLater()));
 
     // connect thread with outside world
+    connect(thread, SIGNAL(SubmitRequest(QJsonObject)), this, SLOT(SubmitCandidate(QJsonObject)));
+    connect(thread, SIGNAL(RequestJobs()), this, SLOT(RequestJobs()));
+    connect(thread, SIGNAL(RequestFeedback(ConnectionThread*)), this, SLOT(RequestFeedback(ConnectionThread*)));
 
-    // start thread
+    // start thread (will execute thread.run())
     thread->start();
 }
 
@@ -110,11 +113,28 @@ void NetworkServer::AddJob(Job job)
     this->SaveJson(this->jobsJsonPath, jobsObject);
 }
 
-void NetworkServer::SubmitCandidate(Candidate candidate)
+QJsonObject NetworkServer::RequestJobs()
 {
+    return this->SerializeJobs();
+}
+
+std::string NetworkServer::RequestFeedback(ConnectionThread * clientConn)
+{
+    return this->clinetConnections[clientConn].GetFeedback();
+}
+
+void NetworkServer::SubmitCandidate(QJsonObject candidateObject, ConnectionThread* candidateThread)
+{
+    Candidate candidate;
+    candidate.SetFromJson(candidateObject);
     this->candidates.push_back(candidate);
+
+    // save json object contains all the candidates
     QJsonObject candidatesObject = this->SerializeCandidates();
     this->SaveJson(this->candidatesJsonPath, candidatesObject);
+
+    // save the thread that called the submit function to use that to send back a feedback
+    this->clinetConnections[candidateThread] = candidate;
 }
 
 void NetworkServer::ReadJobs()
@@ -122,8 +142,7 @@ void NetworkServer::ReadJobs()
     QJsonObject object = this->ReadJson(this->jobsJsonPath);
     if (!object.contains("jobs"))
     {
-        qDebug() << "There is no jobs in json " << QString::fromStdString(this->jobsJsonPath);
-        qDebug() << "Saving for first time ";
+        qDebug() << "Saving for first time " << QString::fromStdString(this->jobsJsonPath);
         // save empty json into the file
         this->SaveJson(this->jobsJsonPath, object);
         return;
@@ -145,8 +164,7 @@ void NetworkServer::ReadCandidates()
     QJsonObject object = this->ReadJson(this->candidatesJsonPath);
     if (!object.contains("candidates"))
     {
-        qDebug() << "There is no candidates in json " << QString::fromStdString(this->candidatesJsonPath);
-        qDebug() << "Saving for first time ";
+        qDebug() << "Saving for first time " << QString::fromStdString(this->candidatesJsonPath);
         // save empty json into the file
         this->SaveJson(this->candidatesJsonPath, object);
         return;
@@ -168,13 +186,15 @@ void NetworkServer::ReadCandidates()
 
 ConnectionThread::ConnectionThread(qintptr socketDescriptor, QObject *parent): QThread (parent)
 {
-    // assign the socket to the socket id descriptor
-    this->connSocket = new QTcpSocket();
-    this->connSocket->setSocketDescriptor(socketDescriptor);
+    this->socketDescriptor = socketDescriptor;
 }
 
 void ConnectionThread::run()
 {
+    // assign the socket to the socket id descriptor
+    this->connSocket = new QTcpSocket();
+    this->connSocket->setSocketDescriptor(this->socketDescriptor);
+
     connect(this->connSocket, SIGNAL(readyRead()), this, SLOT(onReadyRead()));
     connect(this->connSocket, SIGNAL(disconnected()), this, SLOT(onDisconnected()));
 
@@ -211,31 +231,33 @@ void ConnectionThread::onReadyRead()
         QJsonObject response;
         response["type"] = "jobs";
 
-//        std::vector<Job> jobs = emit jobsRequest();
-//        QJsonArray jobsArray;
-//        for (auto job : jobs)
-//        {
-//            job.
-//            jobsArray.push_back()
-//        }
+        qDebug() << "Thread.onReadyRead" << jsonObjectRequest;
 
+        QJsonObject jobsObject = emit RequestJobs();
+        qDebug() << "emit result jobs " << jobsObject;
+
+        response["jobs"] = jobsObject["jobs"];
+
+        // reply in format {type: jobs, jobs:[{job1}, {job2}] }
         this->SendToClient(response);
     }
     else if (jsonObjectRequest["type"] == "submit")
     {
-        // just save that
-        this->onFeedback("FEEDBACKK RAY2");
+        // just save the candidate application info to the server
+        emit SubmitRequest(jsonObjectRequest["candidate"].toObject(), this);
     }
-}
+    else if (jsonObjectRequest["type"] == "feedback")
+    {
 
-void ConnectionThread::onFeedback(std::string feedback)
-{
-    // send feedback via conn socket
-    QJsonObject response;
-    response["type"] = "feedback";
-    response["feedback"] = QJsonValue(QString::fromStdString(feedback));
+        std::string feedback = emit RequestFeedback(this);
 
-    this->SendToClient(response);
+        // send feedback via conn socket
+        QJsonObject response;
+        response["type"] = "feedback";
+        response["feedback"] = QJsonValue(QString::fromStdString(feedback));
+
+        this->SendToClient(response);
+    }
 }
 
 void ConnectionThread::onDisconnected()

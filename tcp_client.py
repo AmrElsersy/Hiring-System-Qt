@@ -9,7 +9,6 @@ with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as s:
 
     conn = s.connect(HOST, PORT)
 
-    with conn:
         print(f"Connected by {addr}")
         while True:
             print("Wait to receive ...")

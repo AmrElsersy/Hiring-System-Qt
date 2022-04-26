@@ -26,12 +26,12 @@ QJsonObject Job::SerializeToJson()
 {
     QJsonObject object;
     object["name"] = QJsonValue(QString::fromStdString(this->name));
-    object["description"] = QJsonValue(QString::fromStdString(this->description));
+    object["requirements"] = QJsonValue(QString::fromStdString(this->description));
     return object;
 }
 
 void Job::SetFromJson(QJsonObject _json)
 {
     this->name = _json["name"].toString().toStdString();
-    this->description = _json["description"].toString().toStdString();
+    this->description = _json["requirements"].toString().toStdString();
 }

@@ -31,11 +31,11 @@ private:
 public slots:
     void onReadyRead();
     void onDisconnected();
-    void onFeedback(std::string);
 
 signals:
-    void submitRequest(QJsonObject);
-    std::vector<Job> jobsRequest();
+    void SubmitRequest(QJsonObject, ConnectionThread*);
+    QJsonObject RequestJobs();
+    std::string RequestFeedback(ConnectionThread*);
 };
 
 class NetworkServer : public QTcpServer
@@ -43,14 +43,20 @@ class NetworkServer : public QTcpServer
     Q_OBJECT
 public:
     explicit NetworkServer(quint16 port,std::string jsonPath, QObject *parent = nullptr);
+
     std::vector<Job> GetJobs();
     std::vector<Candidate> GetCandidates();
     void SetJsonPath(std::string path);
 
     QJsonObject ReadJson(std::string path);
-    bool SaveJson(std::string path, QJsonObject);
+    bool SaveJson(std::string path, QJsonObject object);
 
+    /// \brief Convert all jobs in the server to json format to be saved
+    /// \return Json object in format {"jobs": [{"name":"job1", "requirements":"req1"}]}
     QJsonObject SerializeJobs();
+
+    /// \brief Convert all candidates in the server to json format to be saved
+    /// \return Json object in format {"candidates": [{"name":"candidate1", ...}]}
     QJsonObject SerializeCandidates();
 
 protected:
@@ -58,14 +64,16 @@ protected:
 
 public slots:
     void AddJob(Job job);
-    void SubmitCandidate(Candidate candidate);
-    void SendFeedback(std::string feedback);
+    void SubmitCandidate(QJsonObject, ConnectionThread*);
+    QJsonObject RequestJobs();
+    std::string RequestFeedback(ConnectionThread*);
 
 private:
     std::vector<Job> jobs;
     std::vector<Candidate> candidates;
     std::string jobsJsonPath;
     std::string candidatesJsonPath;
+    std::map<ConnectionThread *, Candidate> clinetConnections;
 
     void ReadJobs();
     void ReadCandidates();

@@ -21,9 +21,11 @@ void CandidateSoftware::RequestJobs()
 void CandidateSoftware::Submit()
 {
     QJsonObject candidateJson = candidate->SerializeToJson();
-    candidateJson["type"] = "submit";
+    QJsonObject request;
+    request["candidate"] = candidateJson;
+    request["type"] = "submit";
 
-    this->network->Send(candidateJson);
+    this->network->Send(request);
 }
 
 Candidate *CandidateSoftware::GetCandidate()

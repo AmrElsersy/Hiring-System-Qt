@@ -2,7 +2,7 @@
 
 Candidate::Candidate()
 {
-
+    this->feedback = "No feedback yet";
 }
 
 Candidate::~Candidate()
@@ -60,13 +60,14 @@ QJsonObject Candidate::SerializeToJson()
     object.insert("gender", genderValue);
     QJsonValue ageValue(this->age);
     object.insert("age", ageValue);
-    QJsonValue gpaValue(this->age);
+    QJsonValue gpaValue(this->gpa);
     object.insert("gpa", gpaValue);
     QJsonValue universityValue(QString::fromStdString(this->university));
     object.insert("university", universityValue);
     QJsonValue jobValue(QString::fromStdString(this->appliedJobName));
     object.insert("job", jobValue);
-
+    QJsonValue feedbackValue(QString::fromStdString(this->feedback));
+    object.insert("feedback", feedbackValue);
     QJsonArray awardsJson;
     for (auto award : this->awards)
         awardsJson.push_back(QJsonValue(QString::fromStdString(award)));
@@ -83,7 +84,18 @@ void Candidate::SetFromJson(QJsonObject object)
     this->SetGender(object["gender"].toString().toStdString());
     this->SetUniversiry(object["university"].toString().toStdString());
     this->SetAppliedJob(object["job"].toString().toStdString());
+    this->SetFeedback(object["feedback"].toString().toStdString());
     QJsonArray awards = object["awards"].toArray();
     for (auto award : awards)
         this->AddAward(award.toString().toStdString());
+}
+
+void Candidate::SetFeedback(std::string _feedback)
+{
+    this->feedback = _feedback;
+}
+
+std::string Candidate::GetFeedback()
+{
+    return this->feedback;
 }

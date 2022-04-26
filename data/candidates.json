@@ -1,0 +1,16 @@
+{
+    "candidates": [
+        {
+            "age": 24,
+            "awards": [
+                "GSoC21",
+                "GSoC20"
+            ],
+            "gender": "Male",
+            "gpa": 24,
+            "job": "MED Software",
+            "name": "Amr Elsersy",
+            "university": "ASU"
+        }
+    ]
+}

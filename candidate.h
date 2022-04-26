@@ -27,6 +27,8 @@ public:
     void SetAppliedJob(std::string);
     QJsonObject SerializeToJson();
     void SetFromJson(QJsonObject);
+    void SetFeedback(std::string);
+    std::string GetFeedback();
 
 private:
     std::string name;
@@ -36,7 +38,7 @@ private:
     std::string university;
     double gpa;
     std::vector<std::string> awards;
-
+    std::string feedback;
     std::string appliedJobName;
 };
 
