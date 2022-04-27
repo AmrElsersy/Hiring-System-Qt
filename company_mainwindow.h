@@ -79,6 +79,7 @@ private:
     QWidget *createJobWidget;
     QWidget *applicationsWidget;
     QStackedWidget *stackWidget;
+    QScrollArea *scrollArea;
 
     void initJobsWidget();
     void initCreateJobWidget();

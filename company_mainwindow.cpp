@@ -2,7 +2,8 @@
 
 company_mainwindow::company_mainwindow(QWidget *parent) : QMainWindow(parent)
 {
-    this->server = new NetworkServer(8080, "/home/amrelsersy/HiringSystem/data");
+//    this->server = new NetworkServer(8080, "../HiringSystem/data");
+    this->server = new NetworkServer(8080, "../data");
 
     // jobs form
     this->jobsWidget = new QWidget();
@@ -100,15 +101,22 @@ void company_mainwindow::onShowPressed(std::string jobName)
     connect(exitBtn, SIGNAL(clicked()), this, SLOT(onBackBtnPressed()));
 
     // add new application widget
+
+    if (this->scrollArea)
+    {
+        this->stackWidget->removeWidget(this->scrollArea);
+        this->scrollArea->deleteLater();
+    }
+
     this->stackWidget->removeWidget(this->applicationsWidget);
     this->applicationsWidget = new QWidget();
     this->applicationsWidget->setLayout(layout);
     this->applicationsWidget->setStyleSheet("background-color:rgb(255,255,255);");
 
     // make the applications scrollable
-    QScrollArea *scrollArea = new QScrollArea();
-    scrollArea->setWidget(this->applicationsWidget);
-    this->stackWidget->addWidget(scrollArea);
+    this->scrollArea = new QScrollArea();
+    this->scrollArea->setWidget(this->applicationsWidget);
+    this->stackWidget->addWidget(this->scrollArea);
 
     this->stackWidget->setCurrentIndex(2);
 }
