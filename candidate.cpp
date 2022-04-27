@@ -99,3 +99,38 @@ std::string Candidate::GetFeedback()
 {
     return this->feedback;
 }
+
+std::string Candidate::GetAppliedJob()
+{
+    return this->appliedJobName;
+}
+
+std::string Candidate::GetName()
+{
+    return  this->name;
+}
+
+std::string Candidate::GetGender()
+{
+    return this->gender;
+}
+
+std::string Candidate::GetUniversity()
+{
+    return this->university;
+}
+
+std::vector<std::string> Candidate::GetAwards()
+{
+    return this->awards;
+}
+
+int Candidate::GetAge()
+{
+    return this->age;
+}
+
+int Candidate::GetGPA()
+{
+    return this->gpa;
+}

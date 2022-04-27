@@ -113,6 +113,13 @@ void NetworkServer::AddJob(Job job)
     this->SaveJson(this->jobsJsonPath, jobsObject);
 }
 
+void NetworkServer::SaveCandidates(std::vector<Candidate> _candidates)
+{
+    this->candidates = _candidates;
+    QJsonObject candidatesObject = this->SerializeCandidates();
+    this->SaveJson(this->candidatesJsonPath, candidatesObject);
+}
+
 QJsonObject NetworkServer::RequestJobs()
 {
     return this->SerializeJobs();
@@ -248,7 +255,6 @@ void ConnectionThread::onReadyRead()
     }
     else if (jsonObjectRequest["type"] == "feedback")
     {
-
         std::string feedback = emit RequestFeedback(this);
 
         // send feedback via conn socket

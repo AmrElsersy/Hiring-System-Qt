@@ -40,6 +40,9 @@ HEADERS += \
 
 FORMS += \
         mainwindow.ui \
+        jobs_company.ui \
+        create_job_company.ui \
+        jobApplication.ui
 
 
 # Default rules for deployment.

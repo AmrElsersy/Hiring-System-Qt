@@ -1,8 +1,16 @@
 {
     "jobs": [
         {
-            "description": "- C++\n- OOP\n- Algorithms\n- Datastructures\n- Qt\n- Software Engineering\n",
-            "name": "MED Software"
+            "name": "MED Software",
+            "requirements": "- C++\n- OOP\n- Algorithms\n- Datastructures\n- Qt\n- Software Engineering\n"
+        },
+        {
+            "name": "Computer Vision Com Iot",
+            "requirements": "- Tensorflow or Pytorch\n- ROS Robot Operating System\n- Qt\n- TensorRT and CUDA\n- C++ and Python"
+        },
+        {
+            "name": "Software Microsoft",
+            "requirements": "C++\nPython\nProblem Solving\nAlgorithms\nNLP"
         }
     ]
 }

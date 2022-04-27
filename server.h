@@ -46,6 +46,7 @@ public:
 
     std::vector<Job> GetJobs();
     std::vector<Candidate> GetCandidates();
+
     void SetJsonPath(std::string path);
 
     QJsonObject ReadJson(std::string path);
@@ -58,6 +59,8 @@ public:
     /// \brief Convert all candidates in the server to json format to be saved
     /// \return Json object in format {"candidates": [{"name":"candidate1", ...}]}
     QJsonObject SerializeCandidates();
+
+    void SaveCandidates(std::vector<Candidate>);
 
 protected:
     virtual void incomingConnection(qintptr socketDescriptor);

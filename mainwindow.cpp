@@ -38,9 +38,11 @@ MainWindow::MainWindow(QWidget *parent) :
     comboBoxGender->addItem("Male");
     comboBoxGender->addItem("Female");
 
-    // feedback widget: close btn
+    // feedback widget: close btn, refresh btn
     auto closeBtn = this->feedbackWidget->findChild<QPushButton*>("pushButton");
     connect(closeBtn, SIGNAL(clicked()), this, SLOT(onClose()));
+    auto refreshBtn = this->feedbackWidget->findChild<QPushButton*>("pushButton_2");
+    connect(refreshBtn , SIGNAL(clicked()), this, SLOT(onRequestFeedback()));
 }
 
 MainWindow::~MainWindow()
@@ -165,5 +167,10 @@ void MainWindow::onSubmit()
 void MainWindow::onClose()
 {
     this->close();
+}
+
+void MainWindow::onRequestFeedback()
+{
+    this->client->RequestFeedback();
 }
 

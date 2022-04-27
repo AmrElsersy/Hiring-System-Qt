@@ -58,6 +58,7 @@ public slots:
     void onApplyPressed();
     void onSubmit();
     void onClose();
+    void onRequestFeedback();
 
 //signals:
 };

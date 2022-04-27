@@ -20,6 +20,7 @@ public:
     void Submit();
     Candidate *GetCandidate();
     void RequestJobs();
+    void RequestFeedback();
 
 private:
     Candidate *candidate;

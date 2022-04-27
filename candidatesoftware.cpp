@@ -18,6 +18,13 @@ void CandidateSoftware::RequestJobs()
     this->network->Send(requestObject);
 }
 
+void CandidateSoftware::RequestFeedback()
+{
+    QJsonObject requestObject;
+    requestObject["type"] = "feedback";
+    this->network->Send(requestObject);
+}
+
 void CandidateSoftware::Submit()
 {
     QJsonObject candidateJson = candidate->SerializeToJson();

@@ -50,7 +50,9 @@ with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as s:
                         - Qt
                         - TensorRT and CUDA
                         - C++ and Python
-                        """}]
+                        """
+                    }
+                    ]
 
             elif json_data["type"] == "submit":
                 response["type"] = "feedback"

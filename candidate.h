@@ -29,6 +29,13 @@ public:
     void SetFromJson(QJsonObject);
     void SetFeedback(std::string);
     std::string GetFeedback();
+    std::string GetAppliedJob();
+    std::string GetName();
+    std::string GetGender();
+    std::string GetUniversity();
+    std::vector<std::string> GetAwards();
+    int GetAge();
+    int GetGPA();
 
 private:
     std::string name;
