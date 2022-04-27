@@ -6,7 +6,7 @@ CandidateSoftware::CandidateSoftware(std::string address, quint16 port)
     this->network = new NetworkClient(address, port);
 
     connect(this->network->GetSocket(), SIGNAL(readyRead()), this, SLOT(onNewMessage()));
-    connect(this->network->GetSocket(), SIGNAL(connected()), this, SLOT(onConnected()));
+    connect(this->network, SIGNAL(connected()), this, SLOT(onConnected()));
 
     this->network->ConnectToServer();
 }
@@ -98,4 +98,6 @@ void CandidateSoftware::onNewMessage()
 
 void CandidateSoftware::onConnected()
 {
+    std::cout << "Reconnected " << std::endl;
+    this->RequestJobs();
 }

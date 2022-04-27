@@ -98,7 +98,7 @@ void NetworkServer::incomingConnection(qintptr socketDescriptor)
     connect(thread, SIGNAL(finished()), thread, SLOT(deleteLater()));
 
     // connect thread with outside world
-    connect(thread, SIGNAL(SubmitRequest(QJsonObject)), this, SLOT(SubmitCandidate(QJsonObject)));
+    connect(thread, SIGNAL(SubmitRequest(QJsonObject,ConnectionThread*)), this, SLOT(SubmitCandidate(QJsonObject,ConnectionThread*)));
     connect(thread, SIGNAL(RequestJobs()), this, SLOT(RequestJobs()));
     connect(thread, SIGNAL(RequestFeedback(ConnectionThread*)), this, SLOT(RequestFeedback(ConnectionThread*)));
 

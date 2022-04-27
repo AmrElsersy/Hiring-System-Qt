@@ -5,6 +5,11 @@ NetworkClient::NetworkClient(std::string _address, quint16 _port): QObject (null
     this->socket = new QTcpSocket();
     this->serverPort = _port;
     this->serverAddress = _address;
+
+    this->reconnectTimer = new QTimer();
+    this->reconnectTimer->setInterval(1000);
+    connect(this->reconnectTimer, SIGNAL(timeout()), this, SLOT(ConnectToServer()));
+    this->isReconnected = false;
 }
 
 NetworkClient::~NetworkClient()
@@ -44,9 +49,20 @@ void NetworkClient::ConnectToServer()
 
     this->socket->connectToHost(address, this->serverPort);
     if (this->socket->waitForConnected())
+    {
         qDebug() << "Connected to " << address << " on port " << this->serverPort;
+        if (this->reconnectTimer->isActive())
+            this->reconnectTimer->stop();
+        if (this->isReconnected)
+            emit connected();
+    }
     else
+    {
         qDebug() << "Failed to connect";
+        if (!this->reconnectTimer->isActive())
+            this->reconnectTimer->start();
+        this->isReconnected = true;
+    }
 
 }
 

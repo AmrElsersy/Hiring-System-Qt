@@ -1,6 +1,4 @@
 #include "mainwindow.h"
-#include "ui_mainwindow.h"
-
 #include <network.h>
 #include <QJsonObject>
 #include <candidatesoftware.h>

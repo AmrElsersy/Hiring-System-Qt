@@ -10,6 +10,7 @@
 #include <QJsonObject>
 
 #include <QObject>
+#include <QTimer>
 
 class NetworkClient : public QObject
 {
@@ -19,11 +20,18 @@ class NetworkClient : public QObject
     public: virtual void Send(QJsonObject);
     public: virtual QJsonObject Receive();
     public: QAbstractSocket *GetSocket();
-    public: void ConnectToServer();
+
+public slots:
+    void ConnectToServer();
 
     private: quint16 serverPort;
     private: std::string serverAddress;
     private: QTcpSocket *socket;
+    private: QTimer *reconnectTimer;
+    private: bool isReconnected;
+
+signals:
+    void connected();
 };
 
 
