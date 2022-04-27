@@ -118,6 +118,26 @@ void NetworkServer::SaveCandidates(std::vector<Candidate> _candidates)
     this->candidates = _candidates;
     QJsonObject candidatesObject = this->SerializeCandidates();
     this->SaveJson(this->candidatesJsonPath, candidatesObject);
+
+    // search for the candidates saved in the connections to update them to give back the feedback to the client
+    for (auto &connCandidate: this->clinetConnections)
+    {
+        auto _c = connCandidate.second;
+        for (uint i = 0; i < candidates.size(); i++)
+        {
+            auto c = candidates[i];
+            if (c.GetAge() == _c.GetAge() &&
+                c.GetGPA() == _c.GetGPA() &&
+                c.GetName() == _c.GetName() &&
+                c.GetGender() == _c.GetGender() &&
+                c.GetUniversity() == _c.GetUniversity() &&
+                c.GetAppliedJob() == _c.GetAppliedJob())
+            {
+                connCandidate.second = c;
+                break;
+            }
+        }
+    }
 }
 
 QJsonObject NetworkServer::RequestJobs()

@@ -90,6 +90,7 @@ void company_mainwindow::onShowPressed(std::string jobName)
             continue;
 
         auto applicationWidget = new ApplicationWidget(candidate);
+        applicationWidget->setMinimumSize(450,450);
         connect(applicationWidget, SIGNAL(feedbackClicked(Candidate, std::string)), this, SLOT(onFeedbackPressed(Candidate, std::string)));
 
         layout->addWidget(applicationWidget);
@@ -98,17 +99,17 @@ void company_mainwindow::onShowPressed(std::string jobName)
     layout->addWidget(exitBtn);
     connect(exitBtn, SIGNAL(clicked()), this, SLOT(onBackBtnPressed()));
 
-    // make the applications scrollable
-    QScrollArea *scrollArea = new QScrollArea();
-    scrollArea->setLayout(layout);
-
     // add new application widget
     this->stackWidget->removeWidget(this->applicationsWidget);
     this->applicationsWidget = new QWidget();
-    this->stackWidget->addWidget(this->applicationsWidget);
-    std::cout << "Stacked Widget "<< this->stackWidget->count() << std::endl;
     this->applicationsWidget->setLayout(layout);
     this->applicationsWidget->setStyleSheet("background-color:rgb(255,255,255);");
+
+    // make the applications scrollable
+    QScrollArea *scrollArea = new QScrollArea();
+    scrollArea->setWidget(this->applicationsWidget);
+    this->stackWidget->addWidget(scrollArea);
+
     this->stackWidget->setCurrentIndex(2);
 }
 

@@ -11,6 +11,10 @@
         {
             "name": "Software Microsoft",
             "requirements": "C++\nPython\nProblem Solving\nAlgorithms\nNLP"
+        },
+        {
+            "name": "SW @ Open Robotics",
+            "requirements": "- Gazebo\n- ROS\n- C++\n- Qt\n- Ruby on Rails"
         }
     ]
 }
