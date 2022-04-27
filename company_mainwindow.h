@@ -15,6 +15,7 @@
 #include <QPushButton>
 #include <QTextEdit>
 #include <QScrollArea>
+#include <QtCharts>
 
 namespace Ui {
 class jobForm;
@@ -69,6 +70,7 @@ public slots:
     void onCreateJobPressed();
     void onFeedbackPressed(Candidate, std::string);
     void onBackBtnPressed();
+    void onStatisticsPressed();
 
 private:
     NetworkServer *server;

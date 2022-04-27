@@ -19,6 +19,10 @@ a GUI that user can select a job to see its requirements then apply for it
 ![](images/candidate_application.png)
 - Data includes jobs and applications are saved in json format and get loaded at the begining of the lanuch
 ![Database](images/database.png)
+- Company can show statisics based on Universities of applicants
+![Chart](images/statistics.png)
+
+
 
 ## UML Design
 Class Diagram for the C++ backend

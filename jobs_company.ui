@@ -67,6 +67,23 @@ font: 16pt &quot;Ubuntu&quot;;</string>
     <string>Add Job</string>
    </property>
   </widget>
+  <widget class="QPushButton" name="statistics">
+   <property name="geometry">
+    <rect>
+     <x>40</x>
+     <y>450</y>
+     <width>121</width>
+     <height>41</height>
+    </rect>
+   </property>
+   <property name="styleSheet">
+    <string notr="true">color: rgb(114, 159, 207);
+font: 16pt &quot;Ubuntu&quot;;</string>
+   </property>
+   <property name="text">
+    <string>Statistics</string>
+   </property>
+  </widget>
  </widget>
  <resources/>
  <connections/>

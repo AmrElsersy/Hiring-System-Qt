@@ -78,6 +78,33 @@ void company_mainwindow::onBackBtnPressed()
     this->stackWidget->setCurrentIndex(0);
 }
 
+void company_mainwindow::onStatisticsPressed()
+{
+    auto candidates = this->server->GetCandidates();
+
+    auto chart = new QChart();
+    auto series = new QPieSeries(chart);
+
+    std::map<std::string, int> universityStatistics;
+    for (auto candidate: candidates)
+    {
+        std::string university = candidate.GetUniversity();
+        if (!universityStatistics.count(university))
+            universityStatistics[university] = 0;
+        universityStatistics[university]++;
+    }
+    for (auto uni : universityStatistics)
+    {
+        series->append(QString::fromStdString(uni.first), uni.second);
+    }
+
+    chart->addSeries(series);
+    chart->setTitle("University Chart Statistics");
+    auto chartView = new QChartView(chart);
+    chartView->setRenderHint(QPainter::Antialiasing);
+    chartView->show();
+}
+
 void company_mainwindow::onShowPressed(std::string jobName)
 {
     auto candidates = this->server->GetCandidates();
@@ -126,8 +153,11 @@ void company_mainwindow::initJobsWidget()
     this->uiJobsForm = new Ui::jobForm();
     this->uiJobsForm->setupUi(this->jobsWidget);
 
-   auto jobsAddBtn = this->jobsWidget->findChild<QPushButton*>("pushButton");
+    auto jobsAddBtn = this->jobsWidget->findChild<QPushButton*>("pushButton");
     connect(jobsAddBtn, SIGNAL(clicked()), this, SLOT(onAddPressed()));
+
+    auto statisticsBtn = this->jobsWidget->findChild<QPushButton*>("statistics");
+    connect(statisticsBtn, SIGNAL(clicked()), this, SLOT(onStatisticsPressed()));
 
     QVBoxLayout *vlayout = this->jobsWidget->findChild<QVBoxLayout*>("verticalLayout");
 
