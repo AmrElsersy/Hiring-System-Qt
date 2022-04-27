@@ -38,3 +38,5 @@ $ ./CompanyHiringSystem
 # for candidate system
 $ ./HiringSystem
 ```
+
+It supports multiple clients at the same time, so you can run `./HiringSystem` many times in different terminals
